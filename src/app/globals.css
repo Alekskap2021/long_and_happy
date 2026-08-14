@@ -1,45 +1,445 @@
 @import "tailwindcss";
 
-@theme {
-  --color-paper: #fbf8f3;
-  --color-paper-deep: #f2ebdf;
-  --color-paper-card: #ffffff;
-  --color-ink: #191512;
-  --color-ink-soft: #564d43;
-  --color-ink-muted: #8a7f72;
-  --color-line: #e2d8c8;
-  --color-line-strong: #cbbda7;
-  --color-accent: #a2452f;
-  --color-accent-hover: #8a3826;
-  --color-accent-soft: #f6e6df;
-  --color-forest: #2f4a3f;
-  --color-forest-soft: #e6ece7;
+/* ═══════════════════════════════════════════════════════════════════════
+   ПАЛИТРЫ
 
-  --font-display: var(--font-serif-display), Georgia, serif;
-  --font-sans: var(--font-sans-text), system-ui, sans-serif;
+   Каждая палитра переопределяет один и тот же набор смысловых токенов.
+   Значения в OKLCH: светлота задаётся напрямую, поэтому контраст
+   переносится между палитрами предсказуемо.
 
-  --text-display: 3.25rem;
+   Переключение — атрибут data-theme на <html> (см. src/lib/themes.ts).
+   ═══════════════════════════════════════════════════════════════════════ */
+
+/* Пауза — светлая, холодная бумага, глубокий петроль. Тема по умолчанию. */
+:root,
+[data-theme="pause"] {
+  color-scheme: light;
+
+  --paper: oklch(97.6% 0.005 230);
+  --paper-deep: oklch(94.4% 0.011 230);
+  --paper-card: oklch(99.3% 0.003 230);
+  --elevated: oklch(99.6% 0.002 230);
+
+  --ink: oklch(23% 0.021 243);
+  --ink-soft: oklch(43% 0.021 243);
+  --ink-muted: oklch(51% 0.018 243);
+
+  --line: oklch(89.5% 0.012 232);
+  --line-strong: oklch(79% 0.017 232);
+
+  --accent: oklch(51% 0.088 213);
+  --accent-hover: oklch(43.5% 0.09 213);
+  --accent-soft: oklch(94.2% 0.028 213);
+  --on-accent: oklch(98.6% 0.004 213);
+
+  --second: oklch(52% 0.086 74);
+  --second-soft: oklch(94% 0.035 78);
+
+  --boundary: oklch(47% 0.075 72);
+  --boundary-soft: oklch(95.2% 0.026 82);
+
+  --band: oklch(26% 0.028 243);
+  --on-band: oklch(96.5% 0.006 230);
+  --band-line: oklch(38% 0.03 243);
+  --band-accent: oklch(80% 0.075 213);
+  --band-second: oklch(81% 0.068 74);
+  --band-boundary: oklch(83% 0.068 80);
+
+  --ring: oklch(51% 0.088 213);
+}
+
+/* Бумага — тёплая бумага и глина: продолжение первого визуального языка. */
+[data-theme="paper"] {
+  color-scheme: light;
+
+  --paper: oklch(97.4% 0.012 85);
+  --paper-deep: oklch(93.8% 0.023 82);
+  --paper-card: oklch(99.4% 0.006 85);
+  --elevated: oklch(99.6% 0.004 85);
+
+  --ink: oklch(24% 0.02 62);
+  --ink-soft: oklch(44% 0.025 62);
+  --ink-muted: oklch(51.5% 0.022 62);
+
+  --line: oklch(88.6% 0.021 80);
+  --line-strong: oklch(78.5% 0.031 78);
+
+  --accent: oklch(49.5% 0.125 38);
+  --accent-hover: oklch(43% 0.125 36);
+  --accent-soft: oklch(94% 0.032 45);
+  --on-accent: oklch(98.8% 0.006 45);
+
+  --second: oklch(43% 0.062 158);
+  --second-soft: oklch(93.6% 0.024 158);
+
+  --boundary: oklch(45% 0.075 130);
+  --boundary-soft: oklch(94.5% 0.026 130);
+
+  --band: oklch(25.5% 0.024 62);
+  --on-band: oklch(96.5% 0.012 85);
+  --band-line: oklch(38% 0.028 62);
+  --band-accent: oklch(80% 0.09 45);
+  --band-second: oklch(80% 0.06 158);
+  --band-boundary: oklch(82% 0.075 130);
+
+  --ring: oklch(49.5% 0.125 38);
+}
+
+/* Хвоя — прохладная зелень, самая «тихая» из светлых. */
+[data-theme="conifer"] {
+  color-scheme: light;
+
+  --paper: oklch(97.5% 0.009 160);
+  --paper-deep: oklch(94.2% 0.019 158);
+  --paper-card: oklch(99.3% 0.005 160);
+  --elevated: oklch(99.6% 0.003 160);
+
+  --ink: oklch(22.5% 0.026 168);
+  --ink-soft: oklch(42% 0.03 168);
+  --ink-muted: oklch(50.5% 0.026 168);
+
+  --line: oklch(88.8% 0.018 160);
+  --line-strong: oklch(78.5% 0.026 158);
+
+  --accent: oklch(45% 0.088 163);
+  --accent-hover: oklch(38.5% 0.088 163);
+  --accent-soft: oklch(93.8% 0.03 163);
+  --on-accent: oklch(98.6% 0.006 163);
+
+  --second: oklch(52% 0.096 68);
+  --second-soft: oklch(94% 0.036 72);
+
+  --boundary: oklch(46% 0.08 76);
+  --boundary-soft: oklch(94.8% 0.027 84);
+
+  --band: oklch(24% 0.032 168);
+  --on-band: oklch(96.5% 0.01 160);
+  --band-line: oklch(36% 0.034 168);
+  --band-accent: oklch(80% 0.08 163);
+  --band-second: oklch(81% 0.075 68);
+  --band-boundary: oklch(83% 0.07 82);
+
+  --ring: oklch(45% 0.088 163);
+}
+
+/* Пастель — кремовая бумага, оливковый акцент, терракотовый второй.
+   Собрана с референса пастельного букета: cream #F2DEC7, олива #6B6D43,
+   терракота #CF7D65, светлый хаки #ABA66F и пудра #E1B8A2 для полосы. */
+[data-theme="pastel"] {
+  color-scheme: light;
+
+  --paper: oklch(97.6% 0.012 74);
+  --paper-deep: oklch(93.6% 0.026 74);
+  --paper-card: oklch(99.2% 0.006 74);
+  --elevated: oklch(99.5% 0.004 74);
+
+  --ink: oklch(24% 0.021 70);
+  --ink-soft: oklch(43.5% 0.025 70);
+  --ink-muted: oklch(51% 0.023 70);
+
+  --line: oklch(88.4% 0.022 74);
+  --line-strong: oklch(78% 0.032 72);
+
+  --accent: oklch(45% 0.078 115);
+  --accent-hover: oklch(38.5% 0.078 115);
+  --accent-soft: oklch(93.4% 0.032 111);
+  --on-accent: oklch(98.6% 0.006 115);
+
+  --second: oklch(51% 0.104 38);
+  --second-soft: oklch(93.8% 0.034 45);
+
+  --boundary: oklch(46% 0.08 68);
+  --boundary-soft: oklch(94.8% 0.028 80);
+
+  --band: oklch(25% 0.031 108);
+  --on-band: oklch(96.5% 0.014 78);
+  --band-line: oklch(37.5% 0.032 108);
+  --band-accent: oklch(80% 0.078 108);
+  --band-second: oklch(82% 0.058 50);
+  --band-boundary: oklch(83% 0.07 80);
+
+  --ring: oklch(45% 0.078 115);
+}
+
+/* Сухоцвет — винный акцент, шалфей и сиреневая дымка в мягких плоскостях.
+   С референса засушенного букета: бумага #E3DBD3, вино #733236,
+   шалфей #9CB2A5, сирень #C8B7C9 и пыльная роза #9D7982. */
+[data-theme="dried"] {
+  color-scheme: light;
+
+  --paper: oklch(97.2% 0.008 68);
+  --paper-deep: oklch(93.4% 0.014 68);
+  --paper-card: oklch(99.1% 0.004 68);
+  --elevated: oklch(99.4% 0.003 68);
+
+  --ink: oklch(23.5% 0.023 15);
+  --ink-soft: oklch(43% 0.028 15);
+  --ink-muted: oklch(50.5% 0.024 15);
+
+  --line: oklch(88.2% 0.013 68);
+  --line-strong: oklch(78% 0.019 60);
+
+  --accent: oklch(41.5% 0.102 18);
+  --accent-hover: oklch(35% 0.098 18);
+  --accent-soft: oklch(92.8% 0.028 324);
+  --on-accent: oklch(98.8% 0.006 18);
+
+  --second: oklch(47.5% 0.055 160);
+  --second-soft: oklch(93.6% 0.026 160);
+
+  --boundary: oklch(45.5% 0.078 70);
+  --boundary-soft: oklch(94.6% 0.026 80);
+
+  --band: oklch(24.5% 0.033 18);
+  --on-band: oklch(96.5% 0.01 68);
+  --band-line: oklch(36.5% 0.035 18);
+  --band-accent: oklch(80% 0.072 15);
+  --band-second: oklch(80.5% 0.05 160);
+  --band-boundary: oklch(82.5% 0.07 80);
+
+  --ring: oklch(41.5% 0.102 18);
+}
+
+/* Студия — белый свет фотосессии, шалфейный акцент, тёмное дерево.
+   С референса съёмки: почти белый #FAF8F5, зелень #6B7A5A,
+   тёплый беж #B8A794 и коричневый #332C26 для полосы. */
+[data-theme="studio"] {
+  color-scheme: light;
+
+  --paper: oklch(98% 0.005 78);
+  --paper-deep: oklch(94.4% 0.009 78);
+  --paper-card: oklch(99.4% 0.003 78);
+  --elevated: oklch(99.6% 0.002 78);
+
+  --ink: oklch(24.5% 0.017 64);
+  --ink-soft: oklch(43% 0.02 64);
+  --ink-muted: oklch(50.5% 0.018 64);
+
+  --line: oklch(89% 0.009 78);
+  --line-strong: oklch(78.5% 0.015 76);
+
+  --accent: oklch(45.5% 0.064 130);
+  --accent-hover: oklch(38.5% 0.064 130);
+  --accent-soft: oklch(93.8% 0.026 130);
+  --on-accent: oklch(98.6% 0.005 130);
+
+  --second: oklch(49.5% 0.04 70);
+  --second-soft: oklch(93.8% 0.022 70);
+
+  --boundary: oklch(46% 0.078 72);
+  --boundary-soft: oklch(94.8% 0.026 82);
+
+  --band: oklch(25.5% 0.017 64);
+  --on-band: oklch(96.8% 0.007 78);
+  --band-line: oklch(38% 0.019 64);
+  --band-accent: oklch(80.5% 0.062 130);
+  --band-second: oklch(81% 0.042 70);
+  --band-boundary: oklch(82.5% 0.07 80);
+
+  --ring: oklch(45.5% 0.064 130);
+}
+
+/* Сумерки — тёмная синяя, абрикосовый акцент. */
+[data-theme="dusk"] {
+  color-scheme: dark;
+
+  --paper: oklch(20.5% 0.024 250);
+  --paper-deep: oklch(24.5% 0.027 250);
+  --paper-card: oklch(26% 0.028 250);
+  --elevated: oklch(29% 0.03 250);
+
+  --ink: oklch(95.5% 0.011 250);
+  --ink-soft: oklch(82% 0.016 250);
+  --ink-muted: oklch(67% 0.019 250);
+
+  --line: oklch(33% 0.028 250);
+  --line-strong: oklch(46% 0.033 250);
+
+  --accent: oklch(79% 0.105 66);
+  --accent-hover: oklch(86% 0.1 68);
+  --accent-soft: oklch(31% 0.045 60);
+  --on-accent: oklch(21% 0.03 60);
+
+  --second: oklch(76% 0.07 165);
+  --second-soft: oklch(30% 0.035 165);
+
+  --boundary: oklch(81% 0.095 85);
+  --boundary-soft: oklch(30.5% 0.04 80);
+
+  --band: oklch(27.5% 0.035 250);
+  --on-band: oklch(95.5% 0.011 250);
+  --band-line: oklch(40% 0.035 250);
+  --band-accent: oklch(79% 0.105 66);
+  --band-second: oklch(76% 0.07 165);
+  --band-boundary: oklch(81% 0.095 85);
+
+  --ring: oklch(79% 0.105 66);
+}
+
+/* Уголь — тёмная тёплая, приглушённый розовый акцент. */
+[data-theme="coal"] {
+  color-scheme: dark;
+
+  --paper: oklch(19.5% 0.008 62);
+  --paper-deep: oklch(23.5% 0.01 62);
+  --paper-card: oklch(25% 0.012 62);
+  --elevated: oklch(28% 0.013 62);
+
+  --ink: oklch(94.8% 0.01 82);
+  --ink-soft: oklch(80.5% 0.013 82);
+  --ink-muted: oklch(65.5% 0.015 82);
+
+  --line: oklch(31.5% 0.012 72);
+  --line-strong: oklch(45% 0.016 72);
+
+  --accent: oklch(77% 0.098 32);
+  --accent-hover: oklch(84% 0.095 34);
+  --accent-soft: oklch(29.5% 0.04 32);
+  --on-accent: oklch(20.5% 0.025 32);
+
+  --second: oklch(75% 0.075 118);
+  --second-soft: oklch(28.5% 0.032 118);
+
+  --boundary: oklch(80% 0.09 72);
+  --boundary-soft: oklch(29% 0.035 72);
+
+  --band: oklch(26.5% 0.014 62);
+  --on-band: oklch(94.8% 0.01 82);
+  --band-line: oklch(39% 0.016 72);
+  --band-accent: oklch(77% 0.098 32);
+  --band-second: oklch(75% 0.075 118);
+  --band-boundary: oklch(80% 0.09 72);
+
+  --ring: oklch(77% 0.098 32);
+}
+
+/* Производные токены считаются от палитры, а не рисуются вручную:
+   палитра меняется — состояния пересчитываются сами. */
+:root {
+  --accent-quiet: color-mix(in oklab, var(--accent) 10%, var(--paper));
+  --accent-edge: color-mix(in oklab, var(--accent) 35%, var(--line));
+  --second-quiet: color-mix(in oklab, var(--second) 10%, var(--paper));
+  --surface-hover: color-mix(in oklab, var(--ink) 4%, var(--paper));
+  --line-hover: color-mix(in oklab, var(--ink) 22%, var(--line));
+  --band-quiet: color-mix(in oklab, var(--on-band) 8%, var(--band));
+}
+
+@theme inline {
+  /* Поверхности */
+  --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
+  --color-paper-card: var(--paper-card);
+  --color-elevated: var(--elevated);
+  --color-surface-hover: var(--surface-hover);
+
+  /* Текст */
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-muted: var(--ink-muted);
+
+  /* Линии */
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-line-hover: var(--line-hover);
+
+  /* Акцент */
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-quiet: var(--accent-quiet);
+  --color-accent-edge: var(--accent-edge);
+  --color-on-accent: var(--on-accent);
+
+  /* Вторичный акцент */
+  --color-second: var(--second);
+  --color-second-soft: var(--second-soft);
+  --color-second-quiet: var(--second-quiet);
+
+  /* Смысловые */
+  --color-boundary: var(--boundary);
+  --color-boundary-soft: var(--boundary-soft);
+
+  /* Инвертированная полоса */
+  --color-band: var(--band);
+  --color-on-band: var(--on-band);
+  --color-band-line: var(--band-line);
+  --color-band-accent: var(--band-accent);
+  --color-band-quiet: var(--band-quiet);
+
+  /* Фокус */
+  --color-ring: var(--ring);
+
+  /* Шрифты */
+  --font-display: var(--font-onest), system-ui, sans-serif;
+  --font-sans: var(--font-golos), system-ui, sans-serif;
+  --font-voice: var(--font-literata), Georgia, serif;
+
+  /* Типографическая шкала: hero держит бренд-тест на любом экране */
+  --text-brand: clamp(2.75rem, 8.5vw, 6.5rem);
+  --text-brand--line-height: 0.94;
+  --text-brand--letter-spacing: -0.035em;
+
+  --text-display: clamp(2rem, 4.4vw, 3.25rem);
   --text-display--line-height: 1.06;
-  --text-display--letter-spacing: -0.02em;
+  --text-display--letter-spacing: -0.028em;
 
-  --radius-card: 0.75rem;
+  --text-title: clamp(1.55rem, 2.6vw, 2.25rem);
+  --text-title--line-height: 1.12;
+  --text-title--letter-spacing: -0.022em;
+
+  --text-lead: clamp(1.1rem, 1.35vw, 1.3rem);
+  --text-lead--line-height: 1.5;
+
+  --radius-card: 1rem;
+  --radius-band: 1.75rem;
+
+  /* Motion: три приёма на весь сайт, см. docs/design-system.md */
+  --ease-calm: cubic-bezier(0.22, 1, 0.36, 1);
+  --animate-step-in: step-in 320ms var(--ease-calm) both;
+
+  @keyframes step-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
 }
 
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
   }
 
   body {
-    background-color: var(--color-paper);
-    color: var(--color-ink);
+    /* position: relative нужен Base UI для backdrop в iOS 26+ Safari */
+    position: relative;
+    background-color: var(--paper);
+    color: var(--ink);
     font-family: var(--font-sans);
     font-size: 1.0625rem;
-    line-height: 1.6;
+    line-height: 1.62;
+    font-feature-settings: "ss01";
+  }
+
+  /* Отдельный стековый контекст: попапы Base UI всегда выше страницы */
+  .app-root {
+    isolation: isolate;
   }
 
   ::selection {
-    background-color: var(--color-accent-soft);
+    background-color: var(--accent-soft);
+    color: var(--ink);
   }
 
   h1,
@@ -47,43 +447,175 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.015em;
+    font-weight: 500;
+    letter-spacing: -0.022em;
     text-wrap: balance;
   }
 
+  p {
+    text-wrap: pretty;
+  }
+
   :focus-visible {
-    outline: 2px solid var(--color-accent);
+    outline: 2px solid var(--ring);
     outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::-webkit-calendar-picker-indicator {
+    filter: none;
   }
 }
 
 @utility container-page {
   width: 100%;
   margin-inline: auto;
-  max-width: 76rem;
+  max-width: 78rem;
   padding-inline: 1.25rem;
+
+  @media (width >= 40rem) {
+    padding-inline: 2rem;
+  }
 }
 
 @utility container-prose {
   width: 100%;
   margin-inline: auto;
-  max-width: 44rem;
+  max-width: 40rem;
   padding-inline: 1.25rem;
+
+  @media (width >= 40rem) {
+    padding-inline: 2rem;
+  }
 }
 
-/* Длинные авторские тексты: единая типографика для статей и разборов. */
+/* Инвертированная полоса переопределяет токены для своего поддерева:
+   кнопки, теги и текст внутри подстраиваются сами, без вариантов в пропсах. */
+@utility band-scope {
+  --paper: var(--band);
+  --paper-deep: var(--band-quiet);
+  --paper-card: var(--band-quiet);
+  --elevated: var(--band-quiet);
+  --surface-hover: color-mix(in oklab, var(--on-band) 8%, var(--band));
+
+  --ink: var(--on-band);
+  --ink-soft: color-mix(in oklab, var(--on-band) 80%, var(--band));
+  --ink-muted: color-mix(in oklab, var(--on-band) 60%, var(--band));
+
+  --line: var(--band-line);
+  --line-strong: color-mix(in oklab, var(--on-band) 45%, var(--band));
+  --line-hover: color-mix(in oklab, var(--on-band) 65%, var(--band));
+
+  --accent: var(--band-accent);
+  --accent-hover: color-mix(in oklab, var(--band-accent) 82%, var(--on-band));
+  --accent-soft: color-mix(in oklab, var(--band-accent) 22%, var(--band));
+  --accent-quiet: color-mix(in oklab, var(--band-accent) 14%, var(--band));
+  --accent-edge: color-mix(in oklab, var(--band-accent) 45%, var(--band-line));
+  --on-accent: var(--band);
+
+  /* Токены полосы заданы палитрой отдельно: ссылка на собственное имя
+     (--second: … var(--second) …) даёт цикл и обнуляет свойство. */
+  --second: var(--band-second);
+  --second-soft: color-mix(in oklab, var(--band-second) 22%, var(--band));
+  --second-quiet: color-mix(in oklab, var(--band-second) 14%, var(--band));
+
+  --boundary: var(--band-boundary);
+  --boundary-soft: color-mix(in oklab, var(--band-boundary) 20%, var(--band));
+
+  --ring: var(--band-accent);
+}
+
+/* Реплика в разговоре: единственное место, где включается «голос». */
+@utility voice {
+  font-family: var(--font-voice);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* Мягкая бумажная плоскость вместо плоского цвета.
+   Два пятна от акцентов + зерно; всё считается от токенов палитры. */
+@utility wash {
+  position: relative;
+  background-image:
+    radial-gradient(
+      75% 60% at 12% 0%,
+      color-mix(in oklab, var(--accent) 14%, transparent) 0%,
+      transparent 62%
+    ),
+    radial-gradient(
+      60% 55% at 92% 18%,
+      color-mix(in oklab, var(--second) 13%, transparent) 0%,
+      transparent 58%
+    ),
+    linear-gradient(
+      180deg,
+      var(--paper-deep) 0%,
+      var(--paper) 78%
+    );
+}
+
+@utility wash-quiet {
+  background-image:
+    radial-gradient(
+      70% 60% at 85% 0%,
+      color-mix(in oklab, var(--second) 9%, transparent) 0%,
+      transparent 60%
+    ),
+    linear-gradient(180deg, var(--paper-deep) 0%, var(--paper) 70%);
+}
+
+@utility grain {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.4;
+    mix-blend-mode: soft-light;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  }
+}
+
+/* Приём 1: спокойное появление секции при первом попадании в кадр.
+   Прячем контент только когда motion включён (атрибут ставит инлайн-скрипт
+   при живом JS и обычной настройке движения) — без JS страница читается сразу.
+   Состояние data-visible ставит src/components/ui/reveal.tsx. */
+@layer components {
+  .reveal {
+    transition:
+      opacity 320ms var(--ease-calm),
+      transform 320ms var(--ease-calm);
+  }
+
+  html[data-motion="on"] .reveal[data-visible="false"] {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      transition: opacity 160ms linear;
+    }
+
+    html[data-motion="on"] .reveal[data-visible="false"] {
+      transform: none;
+    }
+  }
+}
+
+/* Длинные авторские тексты: один ритм для статей, разборов и результатов. */
 @utility prose-editorial {
+  font-size: 1.09rem;
+  line-height: 1.68;
+
   & p {
-    margin-block: 1.05em;
-    color: var(--color-ink-soft);
+    margin-block: 1.1em;
+    color: var(--ink-soft);
   }
 
-  & p:first-child {
-    margin-top: 0;
-  }
-
-  /* Первый заголовок не должен отбивать текст от верхнего края блока:
-     гасим отступ и у прямого первого ребёнка, и внутри первой секции. */
   & > *:first-child,
   & > *:first-child > *:first-child {
     margin-top: 0;
@@ -95,35 +627,47 @@
 
   & h3 {
     margin-top: 2em;
-    margin-bottom: 0.6em;
-    font-size: 1.35rem;
-    color: var(--color-ink);
+    margin-bottom: 0.55em;
+    font-size: 1.4rem;
+    line-height: 1.25;
+    color: var(--ink);
   }
 
   & ul {
-    margin-block: 1.2em;
+    margin-block: 1.25em;
     display: grid;
-    gap: 0.7em;
+    gap: 0.75em;
   }
 
   & li {
     position: relative;
-    padding-left: 1.4em;
-    color: var(--color-ink-soft);
+    padding-left: 1.5em;
+    color: var(--ink-soft);
   }
 
   & li::before {
     content: "";
     position: absolute;
     left: 0;
-    top: 0.62em;
-    width: 0.55em;
+    top: 0.68em;
+    width: 0.7em;
     height: 1px;
-    background-color: var(--color-accent);
+    background-color: var(--accent);
   }
 
   & strong {
-    color: var(--color-ink);
+    color: var(--ink);
     font-weight: 600;
+  }
+
+  & blockquote {
+    margin-block: 1.6em;
+    padding-left: 1.2em;
+    border-left: 2px solid var(--accent-edge);
+    font-family: var(--font-voice);
+    font-style: italic;
+    font-size: 1.2em;
+    line-height: 1.45;
+    color: var(--ink);
   }
 }

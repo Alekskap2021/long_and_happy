@@ -1,8 +1,13 @@
 import type { ReactNode } from "react";
 
-import { Note } from "@/components/ui/card";
-import { Eyebrow } from "@/components/ui/section";
+import { Note } from "@/components/ui/note";
+import { Reveal } from "@/components/ui/reveal";
+import { PageHeader, Section } from "@/components/ui/section";
 
+/**
+ * Общий шаблон юридических страниц: тот же язык, что у остальных разделов,
+ * без отдельной «служебной» вёрстки. Длинный текст живёт в узкой колонке.
+ */
 export function LegalPage({
   eyebrow,
   title,
@@ -17,37 +22,37 @@ export function LegalPage({
   footer?: ReactNode;
 }) {
   return (
-    <div className="py-14 sm:py-20">
-      <div className="container-prose">
-        <Eyebrow>{eyebrow}</Eyebrow>
-        <h1 className="mt-4 text-3xl sm:text-4xl">{title}</h1>
-        <p className="mt-5 text-lg text-ink-soft">{intro}</p>
+    <article>
+      <PageHeader eyebrow={eyebrow} title={title} body={intro} />
 
-        <div className="prose-editorial mt-10">
+      <Section>
+        <Reveal className="max-w-[40rem] space-y-14">
           {sections.map((section) => (
             <section key={section.heading}>
-              <h3>{section.heading}</h3>
-              {section.paragraphs?.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
-              {section.list && (
-                <ul>
-                  {section.list.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              )}
+              <h2 className="text-[1.45rem] leading-snug">{section.heading}</h2>
+              <div className="prose-editorial mt-4">
+                {section.paragraphs?.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+                {section.list && (
+                  <ul>
+                    {section.list.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </section>
           ))}
-        </div>
+        </Reveal>
 
-        <div className="mt-10">
+        <Reveal className="mt-16 max-w-[40rem]">
           <Note>
             {footer ??
               "Черновик для прототипа. Финальные формулировки готовятся с юристом."}
           </Note>
-        </div>
-      </div>
-    </div>
+        </Reveal>
+      </Section>
+    </article>
   );
 }

@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
-import { CardLink, Tag } from "@/components/ui/card";
-import { Illustration } from "@/components/ui/illustration";
-import { Eyebrow } from "@/components/ui/section";
+import { BackdropArt } from "@/components/ui/illustration";
+import { ListLink } from "@/components/ui/list-link";
+import { Reveal } from "@/components/ui/reveal";
+import { PageHeader, Section } from "@/components/ui/section";
+import { Tag } from "@/components/ui/tag";
 import { getThemes } from "@/content/repository";
 import { themeLabels } from "@/content/taxonomy";
 
@@ -19,67 +22,67 @@ export default function ThemesPage() {
   const upcoming = themes.filter((theme) => theme.status !== "published");
 
   return (
-    <div className="py-14 sm:py-20">
-      <div className="container-page">
-        <div className="max-w-3xl">
-          <Eyebrow>Темы</Eyebrow>
-          <h1 className="mt-4 text-3xl sm:text-[2.75rem] sm:leading-[1.08]">
-            Тема меняется — способ смотреть остаётся одним
-          </h1>
-          <p className="mt-5 text-lg text-ink-soft">
-            Деньги, просьбы, границы или пауза — это не отдельные школы. Это разные
-            жизненные области, в которых работает общий метод: замечать, что вы
-            делаете словами и чего добиваетесь.
-          </p>
-        </div>
+    <div>
+      <PageHeader
+        eyebrow="Темы"
+        title="Тема меняется — способ смотреть остаётся одним"
+        body="Деньги, просьбы, границы или пауза — это не отдельные школы. Это разные жизненные области, в которых работает общий метод: замечать, что вы делаете словами и чего добиваетесь."
+      />
 
-        <div className="mt-12 grid gap-4 sm:grid-cols-2">
-          {published.map((theme) => (
-            <CardLink
+      <Section>
+        {/* Иллюстрация уходит за правый край строки: не превью в рамке,
+            а тихая плоскость под текстом. */}
+        <ul className="-mx-5 sm:-mx-6">
+          {published.map((theme, index) => (
+            <li
               key={theme.slug}
-              href={`/temy/${theme.slug}`}
-              className="flex h-full flex-col"
+              className="relative overflow-hidden border-t border-line last:border-b"
             >
               {theme.illustration && (
-                <div className="-mx-6 -mt-6 mb-5 overflow-hidden rounded-t-card border-b border-line bg-paper-deep">
-                  <Illustration name={theme.illustration} variant="thumb" />
-                </div>
+                <BackdropArt
+                  name={theme.illustration}
+                  opacity={0.3}
+                  className="right-6 top-0 hidden aspect-[12/7] h-full sm:block"
+                />
               )}
-              <div>
-                <Tag tone="accent">{themeLabels[theme.slug]}</Tag>
-              </div>
-              <p className="mt-4 font-display text-xl leading-snug">
-                «{theme.cardTitle}»
-              </p>
-              <p className="mt-3 flex-1 text-[0.95rem] text-ink-soft">
-                {theme.title}
-              </p>
-              <span className="mt-5 text-[0.95rem] text-accent">
-                Открыть разбор →
-              </span>
-            </CardLink>
+              <Reveal delay={index * 60} className="relative">
+                <ListLink href={`/temy/${theme.slug}`}>
+                  <span className="block max-w-xl">
+                    <Tag tone="accent">{themeLabels[theme.slug]}</Tag>
+                    <span className="voice mt-4 block text-title text-ink">
+                      «{theme.cardTitle}»
+                    </span>
+                    <span className="mt-3.5 block text-ink-soft">
+                      {theme.title}
+                    </span>
+                  </span>
+                </ListLink>
+              </Reveal>
+            </li>
           ))}
-        </div>
+        </ul>
+      </Section>
 
-        <div className="mt-14">
-          <h2 className="font-display text-2xl">Темы в работе</h2>
-          <p className="mt-2 max-w-2xl text-ink-soft">
-            Разделы заведены в таксономии: у них есть URL и материалы, а страница
-            хаба включается тем же шаблоном, когда готов авторский разбор.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-2">
+      <Section
+        title="Темы в работе"
+        body="Разделы заведены в таксономии: у них есть URL и материалы, а страница хаба включается тем же шаблоном, когда готов авторский разбор."
+        tone="deep"
+      >
+        <Reveal>
+          <ul className="flex flex-wrap gap-2">
             {upcoming.map((theme) => (
-              <a
-                key={theme.slug}
-                href={`/besplatno?theme=${theme.slug}`}
-                className="rounded-full border border-line px-4 py-2 text-sm text-ink-soft transition-colors hover:border-line-strong hover:bg-paper-deep"
-              >
-                {themeLabels[theme.slug]}
-              </a>
+              <li key={theme.slug}>
+                <Link
+                  href={`/besplatno?theme=${theme.slug}`}
+                  className="inline-flex rounded-full border border-line px-4 py-2 text-sm text-ink-soft transition-colors duration-200 ease-calm hover:border-line-hover hover:bg-surface-hover hover:text-ink"
+                >
+                  {themeLabels[theme.slug]}
+                </Link>
+              </li>
             ))}
-          </div>
-        </div>
-      </div>
+          </ul>
+        </Reveal>
+      </Section>
     </div>
   );
 }

@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
-import { ButtonLink } from "@/components/ui/button";
-import { Card, Tag } from "@/components/ui/card";
-import { Eyebrow } from "@/components/ui/section";
+import { ListLink } from "@/components/ui/list-link";
+import { Reveal } from "@/components/ui/reveal";
+import { PageHeader, Section } from "@/components/ui/section";
+import { Tag } from "@/components/ui/tag";
 import { getCatalogProducts, getProductLevels } from "@/content/repository";
 import { productKindLabels } from "@/content/taxonomy";
 
@@ -25,81 +27,89 @@ export default function ProductsPage() {
   const levels = getProductLevels();
 
   return (
-    <div className="py-14 sm:py-20">
-      <div className="container-page">
-        <div className="max-w-3xl">
-          <Eyebrow>Курсы и практикумы</Eyebrow>
-          <h1 className="mt-4 text-3xl sm:text-[2.75rem] sm:leading-[1.08]">
-            Не каталог, а разные уровни задачи
-          </h1>
-          <p className="mt-5 text-lg text-ink-soft">
-            Малый продукт — не урезанная копия большого. Практикум решает один
-            разговор, базовый курс учит воспроизводимому способу мышления,
-            разговорник переносит этот способ в конкретную тему.
-          </p>
-        </div>
+    <div>
+      <PageHeader
+        eyebrow="Курсы и практикумы"
+        title="Не каталог, а разные уровни задачи"
+        body="Малый продукт — не урезанная копия большого. Практикум решает один разговор, базовый курс учит воспроизводимому способу мышления, разговорник переносит этот способ в конкретную тему."
+      />
 
-        <div className="mt-12 grid gap-4 lg:grid-cols-3">
-          {products.map((product) => (
-            <Card key={product.slug} className="flex h-full flex-col">
-              <div className="flex flex-wrap items-center gap-2">
-                <Tag tone="accent" icon={product.kind}>
-                  {productKindLabels[product.kind]}
-                </Tag>
-                <Tag>{availabilityLabels[product.availability]}</Tag>
-              </div>
-              <p className="mt-4 font-display text-xl leading-snug">
-                {product.title}
-              </p>
-              <p className="mt-3 flex-1 text-[0.95rem] text-ink-soft">
-                {product.tagline}
-              </p>
-              <p className="mt-4 text-sm text-ink-muted">
-                {product.price.amount
-                  ? `${product.price.amount.toLocaleString("ru-RU")} ₽`
-                  : "Цена будет объявлена"}
-              </p>
-              <div className="mt-5">
-                <ButtonLink href={`/kursy/${product.slug}`} size="sm">
-                  Подробнее
-                </ButtonLink>
-              </div>
-            </Card>
-          ))}
-        </div>
+      <Section>
+        <Reveal>
+          <ul className="-mx-5 sm:-mx-6">
+            {products.map((product) => (
+              <li
+                key={product.slug}
+                className="border-t border-line last:border-b"
+              >
+                <ListLink href={`/kursy/${product.slug}`}>
+                  <div className="lg:grid lg:grid-cols-[1fr_auto] lg:items-start lg:gap-12">
+                    <div>
+                      <span className="flex flex-wrap items-center gap-2">
+                        <Tag tone="accent" icon={product.kind}>
+                          {productKindLabels[product.kind]}
+                        </Tag>
+                        <Tag tone="outline">
+                          {availabilityLabels[product.availability]}
+                        </Tag>
+                      </span>
+                      <p className="mt-4 font-display text-title">
+                        {product.title}
+                      </p>
+                      <p className="mt-3 max-w-2xl text-ink-soft">
+                        {product.tagline}
+                      </p>
+                    </div>
 
-        <div className="mt-16">
-          <h2 className="font-display text-2xl">Что выбрать</h2>
-          <div className="mt-6 overflow-x-auto rounded-card border border-line bg-paper-card">
-            <table className="w-full min-w-[38rem] text-left text-[0.95rem]">
-              <thead className="bg-paper-deep/70 text-xs uppercase tracking-[0.12em] text-ink-muted">
-                <tr>
-                  <th className="px-5 py-3 font-semibold">Состояние человека</th>
-                  <th className="px-5 py-3 font-semibold">Что ему нужно</th>
-                  <th className="px-5 py-3 font-semibold">Продуктовый ответ</th>
-                </tr>
-              </thead>
-              <tbody>
-                {levels.map((level) => (
-                  <tr key={level.state} className="border-t border-line align-top">
-                    <td className="px-5 py-4 font-medium">{level.state}</td>
-                    <td className="px-5 py-4 text-ink-soft">{level.need}</td>
-                    <td className="px-5 py-4">
-                      {level.href ? (
-                        <Link href={level.href} className="text-accent">
-                          {level.answer}
-                        </Link>
-                      ) : (
-                        <span className="text-ink-muted">{level.answer}</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+                    <p className="mt-5 font-display text-[1.15rem] text-ink-soft lg:mt-1 lg:text-right">
+                      {product.price.amount
+                        ? `${product.price.amount.toLocaleString("ru-RU")} ₽`
+                        : "Цена будет объявлена"}
+                    </p>
+                  </div>
+                </ListLink>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+      </Section>
+
+      {/* Не прайс-лист: состояние человека → что ему нужно → наш ответ. */}
+      <Section
+        eyebrow="Что выбрать"
+        title="Состояние важнее формата"
+        tone="deep"
+      >
+        <Reveal>
+          <ul className="grid gap-10 lg:grid-cols-3 lg:gap-8">
+            {levels.map((level) => (
+              <li key={level.state} className="border-t border-line pt-6">
+                <p className="font-display text-[1.2rem] leading-snug">
+                  {level.state}
+                </p>
+                <p className="mt-3 text-[0.97rem] text-ink-soft">{level.need}</p>
+                <p className="mt-5">
+                  {level.href ? (
+                    <Link
+                      href={level.href}
+                      className="group inline-flex items-center gap-2 text-accent transition-colors duration-200 ease-calm hover:text-accent-hover"
+                    >
+                      {level.answer}
+                      <ArrowRight
+                        aria-hidden
+                        strokeWidth={1.75}
+                        className="h-4 w-4 transition-transform duration-200 ease-calm group-hover:translate-x-1 motion-reduce:transition-none"
+                      />
+                    </Link>
+                  ) : (
+                    <span className="text-ink-muted">{level.answer}</span>
+                  )}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
+      </Section>
     </div>
   );
 }

@@ -1,21 +1,26 @@
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 
-type Variant = "primary" | "secondary" | "inverse" | "ghost";
-type Size = "md" | "sm";
+type Variant = "primary" | "secondary" | "ghost" | "on-band" | "on-band-quiet";
+type Size = "lg" | "md" | "sm";
 
+/** Приём motion №3: отклик интерактива — только цвет и граница, 200ms. */
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-medium transition-[background-color,border-color,color] duration-200 ease-calm disabled:cursor-not-allowed disabled:opacity-55 motion-reduce:transition-none";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-accent text-paper hover:bg-accent-hover",
+  primary: "bg-accent text-on-accent hover:bg-accent-hover",
   secondary:
-    "border border-line-strong bg-paper-card text-ink hover:border-ink hover:bg-paper-deep",
-  inverse: "bg-paper text-ink hover:bg-accent-soft",
-  ghost: "text-accent hover:text-accent-hover underline underline-offset-4",
+    "border border-line-strong text-ink hover:border-line-hover hover:bg-surface-hover",
+  ghost:
+    "text-accent underline decoration-accent-edge decoration-1 underline-offset-[5px] hover:decoration-accent",
+  "on-band": "bg-on-band text-band hover:bg-band-accent",
+  "on-band-quiet":
+    "border border-band-line text-on-band hover:border-on-band hover:bg-band-quiet",
 };
 
 const sizes: Record<Size, string> = {
+  lg: "px-7 py-3.5 text-[1.03rem]",
   md: "px-6 py-3 text-[0.975rem]",
   sm: "px-4 py-2 text-sm",
 };

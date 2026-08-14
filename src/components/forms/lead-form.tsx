@@ -1,9 +1,11 @@
 "use client";
 
+import { Form } from "@base-ui/react/form";
 import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
+import { Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { TextArea, TextField } from "@/components/ui/field";
 import type { Lead } from "@/content/schemas";
 import { sendFunnelEvent, submitLead } from "@/lib/api";
 
@@ -24,9 +26,6 @@ export function LeadForm({
   successText: string;
   withNote?: boolean;
 }) {
-  const [email, setEmail] = useState("");
-  const [note, setNote] = useState("");
-
   const mutation = useMutation({
     mutationFn: submitLead,
     onSuccess: () => {
@@ -40,63 +39,62 @@ export function LeadForm({
 
   if (mutation.isSuccess) {
     return (
-      <p className="rounded-card border border-forest/20 bg-forest-soft p-5 text-forest">
+      <p className="flex gap-3 rounded-card border-l-2 border-second/40 bg-second-quiet px-5 py-5 text-ink-soft">
+        <Check
+          aria-hidden
+          className="mt-0.5 h-5 w-5 shrink-0 text-second"
+          strokeWidth={1.75}
+        />
         {successText}
       </p>
     );
   }
 
   return (
-    <form
-      className="space-y-3"
-      onSubmit={(event) => {
-        event.preventDefault();
+    /* Base UI Form перехватывает отправку и запускает валидацию полей:
+       вместо браузерного пузыря показываются наши сообщения из Field.Error. */
+    <Form
+      className="space-y-4"
+      onFormSubmit={(values) => {
+        const note = String(values.note ?? "").trim();
         mutation.mutate({
-          email: email.trim(),
+          email: String(values.email ?? "").trim(),
           intent,
           productSlug,
-          note: note.trim() || undefined,
+          note: note || undefined,
         });
       }}
     >
-      <label className="block">
-        <span className="text-sm text-ink-soft">Электронная почта</span>
-        <input
-          type="email"
-          required
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          placeholder="vy@example.com"
-          className="mt-1.5 w-full rounded-card border border-line bg-paper-card px-4 py-3 outline-none focus:border-accent"
-        />
-      </label>
+      <TextField
+        name="email"
+        label="Электронная почта"
+        type="email"
+        required
+        placeholder="vy@example.com"
+        errors={[
+          { match: "valueMissing", text: "Нужен адрес, чтобы ответить" },
+          { match: "typeMismatch", text: "Похоже, в адресе опечатка" },
+        ]}
+      />
 
       {withNote && (
-        <label className="block">
-          <span className="text-sm text-ink-soft">
-            С чем вы хотите прийти? Необязательно
-          </span>
-          <textarea
-            rows={4}
-            value={note}
-            onChange={(event) => setNote(event.target.value)}
-            className="mt-1.5 w-full rounded-card border border-line bg-paper-card px-4 py-3 outline-none focus:border-accent"
-          />
-        </label>
+        <TextArea name="note" label="С чем вы хотите прийти? Необязательно" />
       )}
 
-      <Button type="submit" disabled={mutation.isPending}>
-        {mutation.isPending ? "Отправляем…" : submitLabel}
-      </Button>
+      <div className="flex flex-wrap items-center gap-4 pt-1">
+        <Button type="submit" disabled={mutation.isPending}>
+          {mutation.isPending ? "Отправляем…" : submitLabel}
+        </Button>
 
-      {mutation.isError && (
-        <p className="text-sm text-accent">{mutation.error.message}</p>
-      )}
+        {mutation.isError && (
+          <p className="text-sm text-boundary">{mutation.error.message}</p>
+        )}
+      </div>
 
       <p className="text-sm text-ink-muted">
-        Адрес нужен только для этого сообщения. Мы не передаём его третьим лицам и
-        удаляем по первой просьбе.
+        Адрес нужен только для этого сообщения. Мы не передаём его третьим лицам
+        и удаляем по первой просьбе.
       </p>
-    </form>
+    </Form>
   );
 }

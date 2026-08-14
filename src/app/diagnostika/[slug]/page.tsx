@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { DiagnosticRunner } from "@/components/diagnostic/diagnostic-runner";
-import { Note } from "@/components/ui/card";
-import { Illustration } from "@/components/ui/illustration";
+import { BackdropArt } from "@/components/ui/illustration";
+import { Note } from "@/components/ui/note";
+import { Reveal } from "@/components/ui/reveal";
 import { Eyebrow } from "@/components/ui/section";
 import { getDiagnostic, getDiagnostics } from "@/content/repository";
 
@@ -43,27 +44,29 @@ export default async function DiagnosticPage({
   if (!diagnostic) notFound();
 
   return (
-    <article className="py-14 sm:py-20">
-      <div className="container-prose">
-        <Eyebrow>Бесплатная диагностика</Eyebrow>
-        <h1 className="mt-4 text-3xl sm:text-4xl">{diagnostic.title}</h1>
-        <p className="mt-5 text-lg text-ink-soft">{diagnostic.subtitle}</p>
+    <article className="wash grain relative overflow-hidden">
+      {diagnostic.illustration && (
+        <BackdropArt
+          name={diagnostic.illustration}
+          opacity={0.16}
+          className="-right-[34%] -top-[16%] hidden h-[80%] w-[58%] lg:block"
+        />
+      )}
 
-        <div className="mt-10">
+      <div className="container-page relative max-w-[52rem] py-16 sm:py-24">
+        <Reveal>
+          <Eyebrow>Бесплатная диагностика</Eyebrow>
+          <h1 className="mt-5 text-display">{diagnostic.title}</h1>
+          <p className="mt-6 text-lead text-ink-soft">{diagnostic.subtitle}</p>
+        </Reveal>
+
+        <div className="mt-12">
           <DiagnosticRunner diagnostic={diagnostic} />
         </div>
 
-        {/* Иллюстрация ниже сценария: не отодвигает первый шаг от первого экрана. */}
-        {diagnostic.illustration && (
-          <Illustration name={diagnostic.illustration} className="mt-12" />
-        )}
-
-        <div className="mt-12">
-          <Note icon="boundary">
-            <p className="font-medium">Что это не такое</p>
-            <p className="mt-2">{diagnostic.disclaimer}</p>
-          </Note>
-        </div>
+        <Note title="Что это не такое" className="mt-14">
+          <p className="mt-2">{diagnostic.disclaimer}</p>
+        </Note>
       </div>
     </article>
   );

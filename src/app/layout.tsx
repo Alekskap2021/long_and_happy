@@ -1,20 +1,32 @@
 import type { Metadata } from "next";
-import { Inter, Source_Serif_4 } from "next/font/google";
+import { Golos_Text, Literata, Onest } from "next/font/google";
 
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { QueryProvider } from "@/components/providers/query-provider";
+import { ThemeProvider } from "@/components/providers/theme-provider";
+import { defaultTheme, themeBootstrapScript } from "@/lib/themes";
 import "./globals.css";
 
-const sans = Inter({
-  variable: "--font-sans-text",
+/** Заголовки: геометричный гротеск с кириллицей от природы. */
+const display = Onest({
+  variable: "--font-onest",
   subsets: ["latin", "cyrillic"],
   display: "swap",
 });
 
-const serif = Source_Serif_4({
-  variable: "--font-serif-display",
+/** Основной текст и интерфейс: спроектирован под длинную кириллицу. */
+const sans = Golos_Text({
+  variable: "--font-golos",
   subsets: ["latin", "cyrillic"],
+  display: "swap",
+});
+
+/** «Голос»: только реплики в разговоре и цитаты. */
+const voice = Literata({
+  variable: "--font-literata",
+  subsets: ["latin", "cyrillic"],
+  style: ["italic"],
   display: "swap",
 });
 
@@ -48,14 +60,32 @@ export default function RootLayout({
   return (
     <html
       lang="ru"
-      className={`${sans.variable} ${serif.variable} h-full antialiased`}
+      data-theme={defaultTheme}
+      suppressHydrationWarning
+      className={`${display.variable} ${sans.variable} ${voice.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">
-        <QueryProvider>
-          <SiteHeader />
-          <main className="flex-1">{children}</main>
-          <SiteFooter />
-        </QueryProvider>
+      <body className="min-h-full">
+        <script
+          // Ставит выбранную палитру до первой отрисовки, без вспышки.
+          dangerouslySetInnerHTML={{ __html: themeBootstrapScript }}
+        />
+        <ThemeProvider>
+          <QueryProvider>
+            <div className="app-root flex min-h-dvh flex-col">
+              <a
+                href="#content"
+                className="sr-only focus-visible:not-sr-only focus-visible:absolute focus-visible:left-4 focus-visible:top-4 focus-visible:z-50 focus-visible:rounded-full focus-visible:bg-band focus-visible:px-4 focus-visible:py-2 focus-visible:text-sm focus-visible:text-on-band"
+              >
+                К основному содержанию
+              </a>
+              <SiteHeader />
+              <main id="content" className="flex-1">
+                {children}
+              </main>
+              <SiteFooter />
+            </div>
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

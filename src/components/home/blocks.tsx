@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 import { AuthorsPortrait } from "@/components/authors/authors-portrait";
 import { methodSteps, startingPoints } from "@/content/data/home";
@@ -6,71 +7,70 @@ import {
   getAuthors,
   getAuthorsIntro,
   getMaterials,
-  getProductLevels,
   getThemes,
 } from "@/content/repository";
 import type { HomeBlock } from "@/content/schemas";
 import { formatLabels, themeLabels } from "@/content/taxonomy";
-import { Card, CardLink, Note, Tag } from "@/components/ui/card";
 import { ButtonLink } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
-import { Illustration } from "@/components/ui/illustration";
+import { BackdropArt, HeroArt } from "@/components/ui/illustration";
+import { ListLink } from "@/components/ui/list-link";
+import { Note } from "@/components/ui/note";
+import { Reveal } from "@/components/ui/reveal";
 import { Eyebrow, Section } from "@/components/ui/section";
+import { Tag } from "@/components/ui/tag";
+
+const diagnosticHref = "/diagnostika/chto-vy-delaete-slovami";
 
 function themeHref(slug: string, published: boolean) {
   return published ? `/temy/${slug}` : `/besplatno?theme=${slug}`;
 }
 
+/**
+ * Первый экран: бренд, один заголовок, одна поддерживающая фраза, одна группа
+ * действий и одна доминирующая плоскость. Ничего больше.
+ */
 function HeroBlock({ block }: { block: HomeBlock }) {
   return (
-    <section className="border-b border-line bg-paper">
-      <div className="container-page grid gap-12 py-16 sm:py-24 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
-        <div>
-          <Eyebrow>Вероника и Игорь · психологи</Eyebrow>
-          <h1 className="mt-5 text-4xl sm:text-display">{block.title}</h1>
-          <p className="mt-6 max-w-xl text-lg text-ink-soft">{block.body}</p>
+    <section className="wash grain relative overflow-hidden border-b border-line">
+      {/* На узком экране плоскость уходит под нижний край, чтобы не спорить
+          с кнопками; с sm занимает правую половину кадра. */}
+      <HeroArt className="-bottom-[20%] -right-[42%] h-[42%] w-[118%] sm:-right-[14%] sm:bottom-auto sm:top-0 sm:h-full sm:w-[62%]" />
+
+      <div className="container-page relative flex min-h-[min(86svh,44rem)] flex-col justify-center py-20 sm:py-24">
+        <Reveal>
+          <p className="text-[0.72rem] font-semibold uppercase tracking-[0.22em] text-ink-muted">
+            Вероника и Игорь · психологи
+          </p>
+          <h1 className="mt-7 font-display text-brand font-medium">
+            Долго
+            <br />
+            и счастливо
+          </h1>
+        </Reveal>
+
+        <Reveal delay={90} className="mt-12 max-w-[34rem]">
+          <p className="font-display text-title">{block.title}</p>
+          {block.body && (
+            <p className="mt-5 text-lead text-ink-soft">{block.body}</p>
+          )}
+
           <div className="mt-9 flex flex-wrap gap-3">
-            <ButtonLink href="#situations">
-              Разобраться в своём разговоре
+            <ButtonLink href={diagnosticHref} size="lg">
+              Пройти диагностику
+              <ArrowRight aria-hidden className="h-4 w-4" strokeWidth={1.75} />
             </ButtonLink>
-            <ButtonLink href="/kursy" variant="secondary">
-              Посмотреть курсы и материалы
+            <ButtonLink href="/besplatno" variant="secondary" size="lg">
+              Начать бесплатно
             </ButtonLink>
           </div>
-          <p className="mt-6 text-sm text-ink-muted">
-            Мы не обещаем изменить другого человека и не заменяем терапию там, где
-            нужна глубокая работа.
-          </p>
-        </div>
-
-        <figure className="rounded-card border border-line bg-paper-card p-7">
-          <figcaption className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted">
-            Одна и та же сцена, два слышания
-          </figcaption>
-          <blockquote className="mt-5 space-y-3 font-display text-xl leading-snug">
-            <p>— Мы это уже сто раз обсуждали.</p>
-            <p className="text-ink-muted">— Значит, ты меня так и не услышал.</p>
-          </blockquote>
-          <dl className="mt-6 space-y-4 border-t border-line pt-5 text-[0.95rem]">
-            <div>
-              <dt className="font-semibold">Цель</dt>
-              <dd className="text-ink-soft">
-                Хочу, чтобы стало ближе и меня заметили.
-              </dd>
-            </div>
-            <div>
-              <dt className="font-semibold">Действие словами</dt>
-              <dd className="text-ink-soft">
-                Обвинение, на которое возможно только оправдание.
-              </dd>
-            </div>
-          </dl>
-        </figure>
+        </Reveal>
       </div>
     </section>
   );
 }
 
+/** Узнавание сцены: реплики набраны «голосом», а не упакованы в витрину. */
 function SituationsBlock({ block }: { block: HomeBlock }) {
   const themes = getThemes().slice(0, 6);
 
@@ -82,111 +82,130 @@ function SituationsBlock({ block }: { block: HomeBlock }) {
       body={block.body}
       tone="deep"
     >
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {themes.map((theme) => {
-          const published = theme.status === "published";
-          return (
-            <CardLink
-              key={theme.slug}
-              href={themeHref(theme.slug, published)}
-              className="flex h-full flex-col justify-between"
-            >
-              <p className="font-display text-xl leading-snug">
-                «{theme.cardTitle}»
-              </p>
-              <div className="mt-6 flex items-center justify-between">
-                <Tag>{themeLabels[theme.slug]}</Tag>
-                <span className="text-sm text-accent">
-                  {published ? "Открыть разбор" : "Материалы темы"}
-                </span>
-              </div>
-            </CardLink>
-          );
-        })}
-      </div>
-      <p className="mt-6 max-w-2xl text-sm text-ink-muted">
-        Карточка ведёт не в оплату, а в тематическое пространство: сначала
+      <Reveal>
+        <ul className="-mx-5 grid sm:-mx-6 sm:grid-cols-2 sm:gap-x-6">
+          {themes.map((theme) => {
+            const published = theme.status === "published";
+            return (
+              <li key={theme.slug}>
+                <ListLink href={themeHref(theme.slug, published)}>
+                  <p className="voice max-w-[26rem] text-[1.4rem] leading-snug text-ink">
+                    «{theme.cardTitle}»
+                  </p>
+                  <p className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2">
+                    <Tag tone="outline">{themeLabels[theme.slug]}</Tag>
+                    <span className="text-sm text-ink-muted">
+                      {published ? "бесплатный разбор" : "материалы темы"}
+                    </span>
+                  </p>
+                </ListLink>
+              </li>
+            );
+          })}
+        </ul>
+      </Reveal>
+
+      <p className="mt-10 max-w-2xl text-sm text-ink-muted">
+        Сцена ведёт не в оплату, а в тематическое пространство: сначала
         понимание и бесплатный опыт, следующий шаг — потом.
       </p>
     </Section>
   );
 }
 
+/** Микроопыт. Единственная инвертированная полоса на главной. */
 function DiagnosticBlock({ block }: { block: HomeBlock }) {
+  const steps = [
+    "Три узнаваемые сцены из обычной жизни пары.",
+    "В каждой — что вам важно и что вы делаете словами.",
+    "Результат с разбором и подходящим следующим шагом.",
+  ];
+
   return (
-    <Section tone="ink">
-      <div className="grid gap-10 lg:grid-cols-[1fr_0.8fr] lg:items-center">
-        <div>
-          <Eyebrow tone="ink">{block.eyebrow}</Eyebrow>
-          <h2 className="mt-3 text-3xl sm:text-[2.5rem] sm:leading-[1.1]">
-            {block.title}
-          </h2>
-          <p className="mt-5 max-w-xl text-lg text-paper-deep/85">
+    <Section tone="band">
+      <BackdropArt
+        name="divergence"
+        opacity={0.24}
+        className="-right-[14%] -top-[38%] hidden h-[95%] w-[46%] lg:block"
+      />
+
+      <div className="relative grid gap-14 lg:grid-cols-[1fr_0.75fr] lg:items-end">
+        <Reveal>
+          {block.eyebrow && <Eyebrow>{block.eyebrow}</Eyebrow>}
+          <h2 className="mt-4 text-display">{block.title}</h2>
+          <p className="mt-6 max-w-xl text-lead text-ink-soft">
             Мини-диагностика «Что вы делаете словами, когда разговор становится
             трудным?»: три ситуации, шесть вопросов, 3–5 минут.
           </p>
-          <p className="mt-4 max-w-xl text-paper-deep/70">
-            Это не тип личности и не оценка ваших отношений. Результат показывает,
-            чего вы хотите от трудного разговора, что при этом делаете словами и
-            где цель расходится со способом.
+          <p className="mt-4 max-w-xl text-ink-muted">
+            Это не тип личности и не оценка ваших отношений. Результат
+            показывает, чего вы хотите от трудного разговора, что при этом
+            делаете словами и где цель расходится со способом.
           </p>
-          <div className="mt-8">
-            <ButtonLink
-              href="/diagnostika/chto-vy-delaete-slovami"
-              variant="inverse"
-            >
+
+          <div className="mt-9">
+            <ButtonLink href={diagnosticHref} variant="on-band" size="lg">
               Пройти диагностику
+              <ArrowRight aria-hidden className="h-4 w-4" strokeWidth={1.75} />
             </ButtonLink>
           </div>
-        </div>
+        </Reveal>
 
-        <ol className="space-y-4 rounded-card border border-paper/15 bg-paper/5 p-7">
-          {[
-            "Три узнаваемые сцены из обычной жизни пары.",
-            "В каждой — что вам важно и что вы делаете словами.",
-            "Результат с разбором и подходящим следующим шагом.",
-          ].map((item, index) => (
-            <li key={item} className="flex gap-4">
-              <span className="font-display text-2xl text-accent-soft">
-                {index + 1}
-              </span>
-              <span className="text-paper-deep/85">{item}</span>
-            </li>
-          ))}
-        </ol>
+        <Reveal delay={80}>
+          <ol className="space-y-6">
+            {steps.map((step, index) => (
+              <li key={step} className="flex gap-5">
+                <span className="font-display text-lg text-accent">
+                  0{index + 1}
+                </span>
+                <span className="text-ink-soft">{step}</span>
+              </li>
+            ))}
+          </ol>
+        </Reveal>
       </div>
     </Section>
   );
 }
 
+/** Метод: пять шагов одной линией. */
 function MethodBlock({ block }: { block: HomeBlock }) {
   return (
     <Section eyebrow={block.eyebrow} title={block.title} body={block.body}>
-      <ol className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        {methodSteps.map((step, index) => (
-          <li key={step.title}>
-            <Card className="h-full">
-              <div className="flex items-center justify-between">
-                <Icon name={step.icon} className="h-7 w-7 text-accent" />
-                <span className="font-display text-2xl text-line-strong">
+      <BackdropArt
+        name="method-core"
+        opacity={0.16}
+        className="-right-[34%] -top-[45%] hidden h-[195%] w-[68%] lg:block"
+      />
+
+      <Reveal>
+        <ol className="relative grid gap-10 sm:grid-cols-2 lg:grid-cols-5 lg:gap-7">
+          <span
+            aria-hidden
+            className="absolute left-6 top-6 hidden h-px w-[calc(100%-3rem)] bg-line lg:block"
+          />
+          {methodSteps.map((step, index) => (
+            <li key={step.title} className="relative">
+              <span className="relative flex h-12 w-12 items-center justify-center rounded-full border border-line bg-paper text-accent">
+                <Icon name={step.icon} className="h-5 w-5" />
+              </span>
+              <p className="mt-5 flex items-baseline gap-2.5">
+                <span className="text-[0.72rem] font-semibold tracking-[0.14em] text-ink-muted">
                   0{index + 1}
                 </span>
-              </div>
-              <p className="mt-4 font-semibold">{step.title}</p>
-              <p className="mt-2 text-[0.95rem] text-ink-soft">{step.body}</p>
-            </Card>
-          </li>
-        ))}
-      </ol>
-
-      <Illustration name="method-core" className="mt-10" />
+                <span className="font-display text-[1.15rem]">{step.title}</span>
+              </p>
+              <p className="mt-2.5 text-[0.95rem] text-ink-soft">{step.body}</p>
+            </li>
+          ))}
+        </ol>
+      </Reveal>
     </Section>
   );
 }
 
+/** Следующий шаг: состояния человека, а не прайс-лист. */
 function LevelsBlock({ block }: { block: HomeBlock }) {
-  const levels = getProductLevels().slice(0, 3);
-
   return (
     <Section
       eyebrow={block.eyebrow}
@@ -194,132 +213,128 @@ function LevelsBlock({ block }: { block: HomeBlock }) {
       body={block.body}
       tone="deep"
     >
-      <div className="grid gap-4 lg:grid-cols-3">
-        {startingPoints.map((point, index) => (
-          <Card key={point.title} className="flex h-full flex-col">
-            <Eyebrow>{`Уровень ${index + 1}`}</Eyebrow>
-            <p className="mt-3 font-display text-xl">{point.title}</p>
-            <p className="mt-3 flex-1 text-[0.95rem] text-ink-soft">
-              {point.body}
-            </p>
-            <Link
-              href={point.href}
-              className="mt-5 text-[0.95rem] text-accent hover:text-accent-hover"
+      <Reveal>
+        <ul className="-mx-5 sm:-mx-6">
+          {startingPoints.map((point, index) => (
+            <li
+              key={point.title}
+              className="border-t border-line last:border-b"
             >
-              {point.label} →
-            </Link>
-          </Card>
-        ))}
-      </div>
-
-      <div className="mt-8 overflow-x-auto rounded-card border border-line bg-paper-card">
-        <table className="w-full min-w-[38rem] text-left text-[0.95rem]">
-          <thead className="bg-paper-deep/70 text-xs uppercase tracking-[0.12em] text-ink-muted">
-            <tr>
-              <th className="px-5 py-3 font-semibold">Состояние человека</th>
-              <th className="px-5 py-3 font-semibold">Что ему нужно</th>
-              <th className="px-5 py-3 font-semibold">Продуктовый ответ</th>
-            </tr>
-          </thead>
-          <tbody>
-            {levels.map((level) => (
-              <tr key={level.state} className="border-t border-line align-top">
-                <td className="px-5 py-4 font-medium">{level.state}</td>
-                <td className="px-5 py-4 text-ink-soft">{level.need}</td>
-                <td className="px-5 py-4">
-                  {level.href ? (
-                    <Link href={level.href} className="text-accent">
-                      {level.answer}
-                    </Link>
-                  ) : (
-                    <span className="text-ink-muted">{level.answer}</span>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+              <Link
+                href={point.href}
+                className="group grid gap-4 rounded-card px-5 py-8 transition-colors duration-200 ease-calm hover:bg-surface-hover motion-reduce:transition-none sm:px-6 lg:grid-cols-[auto_1fr_auto] lg:items-center lg:gap-10"
+              >
+                <span className="font-display text-[0.8rem] tracking-[0.14em] text-ink-muted">
+                  0{index + 1}
+                </span>
+                <span>
+                  <span className="block font-display text-title">
+                    {point.title}
+                  </span>
+                  <span className="mt-2.5 block max-w-xl text-ink-soft">
+                    {point.body}
+                  </span>
+                </span>
+                <span className="flex items-center gap-2 text-[0.95rem] text-accent">
+                  {point.label}
+                  <ArrowRight
+                    aria-hidden
+                    strokeWidth={1.75}
+                    className="h-4 w-4 transition-transform duration-200 ease-calm group-hover:translate-x-1 motion-reduce:transition-none"
+                  />
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </Reveal>
     </Section>
   );
 }
 
+/** Библиотека: короткий срез того, что можно взять прямо сейчас. */
 function LibraryBlock({ block }: { block: HomeBlock }) {
   const materials = getMaterials({ limit: 4 });
 
   return (
-    <Section eyebrow={block.eyebrow} title={block.title} body={block.body}>
-      <div className="grid gap-4 sm:grid-cols-2">
-        {materials.map((material) => (
-          <CardLink
-            key={material.slug}
-            href={`/besplatno/${material.slug}`}
-            className="flex h-full flex-col"
-          >
-            <div className="flex items-center gap-2">
-              <Tag tone="accent" icon={material.format}>
-                {formatLabels[material.format]}
-              </Tag>
-              <span className="text-xs text-ink-muted">
-                {material.readingMinutes} мин
-              </span>
-            </div>
-            <p className="mt-4 font-display text-xl leading-snug">
-              {material.title}
-            </p>
-            <p className="mt-3 flex-1 text-[0.95rem] text-ink-soft">
-              {material.excerpt}
-            </p>
-          </CardLink>
-        ))}
-      </div>
-      <div className="mt-8">
+    <Section
+      eyebrow={block.eyebrow}
+      title={block.title}
+      body={block.body}
+      aside={
         <ButtonLink href="/besplatno" variant="secondary">
-          Вся бесплатная библиотека
+          Вся библиотека
         </ButtonLink>
-      </div>
+      }
+    >
+      <Reveal>
+        <ul className="-mx-5 grid sm:-mx-6 sm:grid-cols-2 sm:gap-x-6">
+          {materials.map((material) => (
+            <li key={material.slug}>
+              <ListLink href={`/besplatno/${material.slug}`}>
+                <span className="flex flex-wrap items-center gap-2.5">
+                  <Tag tone="accent" icon={material.format}>
+                    {formatLabels[material.format]}
+                  </Tag>
+                  <span className="text-xs text-ink-muted">
+                    {material.readingMinutes} мин
+                  </span>
+                </span>
+                <p className="mt-4 max-w-[24rem] font-display text-[1.3rem] leading-snug">
+                  {material.title}
+                </p>
+                <p className="mt-3 max-w-[30rem] text-[0.95rem] text-ink-soft">
+                  {material.excerpt}
+                </p>
+              </ListLink>
+            </li>
+          ))}
+        </ul>
+      </Reveal>
     </Section>
   );
 }
 
+/** Авторы: два слышания, а не резюме. */
 function AuthorsBlock({ block }: { block: HomeBlock }) {
   const authors = getAuthors();
   const intro = getAuthorsIntro();
 
   return (
-    <Section eyebrow={block.eyebrow} title={block.title} tone="deep">
-      <div className="grid gap-10 lg:grid-cols-[0.6fr_1.4fr] lg:gap-12">
-        <div className="mx-auto w-full max-w-xs lg:mx-0">
+    <Section eyebrow={block.eyebrow} title={block.title}>
+      <div className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+        <Reveal className="mx-auto w-full max-w-sm lg:mx-0">
           <AuthorsPortrait size="compact" />
-        </div>
+        </Reveal>
 
-        <div>
+        <Reveal delay={80}>
           <div className="prose-editorial max-w-2xl">
-            <h3 className="font-display text-2xl">{intro.title}</h3>
+            <h3 className="font-display">{intro.title}</h3>
             {intro.paragraphs.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2">
+          <div className="mt-12 grid gap-10 sm:grid-cols-2">
             {authors.map((author) => (
-              <Card key={author.slug} className="h-full">
-                <p className="font-display text-xl">{author.name}</p>
+              <div key={author.slug} className="border-l-2 border-accent-edge pl-5">
+                <p className="font-display text-[1.1rem]">{author.name}</p>
                 <p className="mt-1 text-sm text-ink-muted">{author.role}</p>
-                <p className="mt-4 text-[0.95rem] text-ink-soft">
+                <p className="voice mt-4 text-[1.1rem] leading-snug text-ink">
                   {author.voice}
                 </p>
-              </Card>
+              </div>
             ))}
           </div>
 
           <Link
             href="/o-nas"
-            className="mt-6 inline-block text-accent hover:text-accent-hover"
+            className="mt-10 inline-flex items-center gap-2 text-accent transition-colors duration-200 ease-calm hover:text-accent-hover"
           >
-            Подробнее о нас и наших границах →
+            Подробнее о нас и наших границах
+            <ArrowRight aria-hidden className="h-4 w-4" strokeWidth={1.75} />
           </Link>
-        </div>
+        </Reveal>
       </div>
     </Section>
   );
@@ -330,13 +345,15 @@ function BoundariesBlock({ block }: { block: HomeBlock }) {
 
   return (
     <Section eyebrow={block.eyebrow} title={block.title} body={block.body}>
-      <Note>
-        <ul className="space-y-2">
-          {intro.disbelief.items.map((item) => (
-            <li key={item}>— {item}</li>
-          ))}
-        </ul>
-      </Note>
+      <Reveal>
+        <Note title={intro.disbelief.title} className="max-w-3xl">
+          <ul className="mt-3 space-y-2">
+            {intro.disbelief.items.map((item) => (
+              <li key={item}>— {item}</li>
+            ))}
+          </ul>
+        </Note>
+      </Reveal>
     </Section>
   );
 }

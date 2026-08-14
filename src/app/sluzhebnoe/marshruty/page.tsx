@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 
-import { Card, Note, Tag } from "@/components/ui/card";
-import { Eyebrow } from "@/components/ui/section";
+import { Note } from "@/components/ui/note";
+import { Panel } from "@/components/ui/panel";
+import { Reveal } from "@/components/ui/reveal";
+import { PageHeader, Section } from "@/components/ui/section";
+import { Tag } from "@/components/ui/tag";
 import { listEvents, listLeads } from "@/server/store";
 
 export const metadata: Metadata = {
@@ -45,89 +48,123 @@ export default function FunnelPage() {
   }));
 
   return (
-    <div className="py-14 sm:py-20">
-      <div className="container-page">
-        <Eyebrow>Служебная страница</Eyebrow>
-        <h1 className="mt-4 text-3xl sm:text-4xl">Аналитика маршрутов</h1>
-        <p className="mt-5 max-w-2xl text-lg text-ink-soft">
-          Источник → тема → запуск диагностики → завершение → продукт → заявка.
-          События собираются в памяти процесса, пока вы ходите по прототипу.
-        </p>
+    <article>
+      <PageHeader
+        eyebrow="Служебная страница"
+        title="Аналитика маршрутов"
+        body="Источник → тема → запуск диагностики → завершение → продукт → заявка. События собираются в памяти процесса, пока вы ходите по прототипу."
+      />
 
-        <div className="mt-10 grid gap-3 sm:grid-cols-3 lg:grid-cols-6">
-          {counts.map((item) => (
-            <Card key={item.step}>
-              <p className="font-display text-3xl">{item.count}</p>
-              <p className="mt-2 text-sm text-ink-soft">{item.label}</p>
-            </Card>
-          ))}
-        </div>
+      <Section>
+        <Reveal>
+          <ul className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-6">
+            {counts.map((item) => (
+              <li key={item.step} className="border-t border-line pt-4">
+                <p className="font-display text-[2.4rem] leading-none">
+                  {item.count}
+                </p>
+                <p className="mt-3 text-sm text-ink-soft">{item.label}</p>
+              </li>
+            ))}
+          </ul>
+        </Reveal>
 
-        <div className="mt-12 grid gap-8 lg:grid-cols-[1.2fr_0.8fr]">
-          <div>
-            <h2 className="font-display text-2xl">Последние события</h2>
+        <div className="mt-20 grid gap-14 lg:grid-cols-[1.4fr_0.6fr] lg:gap-16">
+          <Reveal className="min-w-0">
+            <h2 className="text-title">Последние события</h2>
             {events.length === 0 ? (
-              <p className="mt-4 text-ink-muted">
-                Пока пусто. Пройдите по сайту: главная, тема, диагностика, продукт.
+              <p className="mt-5 text-ink-muted">
+                Пока пусто. Пройдите по сайту: главная, тема, диагностика,
+                продукт.
               </p>
             ) : (
-              <div className="mt-5 space-y-2">
-                {events.slice(0, 25).map((event) => (
-                  <div
-                    key={event.id}
-                    className="flex flex-wrap items-center gap-3 rounded-card border border-line bg-paper-card px-4 py-3 text-sm"
-                  >
-                    <Tag tone="accent">{stepLabels[event.step] ?? event.step}</Tag>
-                    <span className="text-ink-soft">{event.path}</span>
-                    {event.meta &&
-                      Object.entries(event.meta).map(([key, value]) => (
-                        <span key={key} className="text-ink-muted">
-                          {key}: {value}
-                        </span>
+              <Panel className="mt-6">
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[32rem] border-collapse text-left text-sm">
+                    <thead>
+                      <tr className="border-b border-line">
+                        <th className="pb-3 pr-4 font-medium text-ink-muted">
+                          Событие
+                        </th>
+                        <th className="pb-3 pr-4 font-medium text-ink-muted">
+                          Путь
+                        </th>
+                        <th className="pb-3 pr-4 font-medium text-ink-muted">
+                          Детали
+                        </th>
+                        <th className="pb-3 text-right font-medium text-ink-muted">
+                          Время
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {events.slice(0, 25).map((event) => (
+                        <tr key={event.id} className="border-b border-line last:border-0">
+                          <td className="whitespace-nowrap py-3 pr-4 align-top">
+                            <Tag tone="accent">
+                              {stepLabels[event.step] ?? event.step}
+                            </Tag>
+                          </td>
+                          <td className="py-3 pr-4 align-top text-ink-soft">
+                            {event.path}
+                          </td>
+                          <td className="py-3 pr-4 align-top text-ink-muted">
+                            {event.meta &&
+                              Object.entries(event.meta).map(([key, value]) => (
+                                <span key={key} className="mr-3 inline-block">
+                                  {key}: {value}
+                                </span>
+                              ))}
+                          </td>
+                          <td className="py-3 text-right align-top tabular-nums text-ink-muted">
+                            {new Date(event.createdAt).toLocaleTimeString(
+                              "ru-RU",
+                            )}
+                          </td>
+                        </tr>
                       ))}
-                    <span className="ml-auto text-ink-muted">
-                      {new Date(event.createdAt).toLocaleTimeString("ru-RU")}
-                    </span>
-                  </div>
-                ))}
-              </div>
+                    </tbody>
+                  </table>
+                </div>
+              </Panel>
             )}
-          </div>
+          </Reveal>
 
-          <div>
-            <h2 className="font-display text-2xl">Заявки</h2>
+          <Reveal delay={80}>
+            <h2 className="text-title">Заявки</h2>
             {leads.length === 0 ? (
-              <p className="mt-4 text-ink-muted">
+              <p className="mt-5 text-ink-muted">
                 Заявок нет. Попробуйте лист ожидания на странице практикума.
               </p>
             ) : (
-              <div className="mt-5 space-y-2">
+              <ul className="mt-6">
                 {leads.map((lead) => (
-                  <Card key={lead.id}>
+                  <li
+                    key={lead.id}
+                    className="border-t border-line py-5 last:border-b"
+                  >
                     <p className="font-medium">{lead.email}</p>
                     <p className="mt-1 text-sm text-ink-muted">
                       {lead.intent}
                       {lead.productSlug ? ` · ${lead.productSlug}` : ""}
                     </p>
                     {lead.note && (
-                      <p className="mt-2 text-[0.95rem] text-ink-soft">
+                      <p className="mt-2.5 text-[0.95rem] text-ink-soft">
                         {lead.note}
                       </p>
                     )}
-                  </Card>
+                  </li>
                 ))}
-              </div>
+              </ul>
             )}
 
-            <div className="mt-6">
-              <Note>
-                Данные живут в памяти процесса: после перезапуска сервера список
-                пустой. Это осознанная заглушка вместо базы.
-              </Note>
-            </div>
-          </div>
+            <Note className="mt-8">
+              Данные живут в памяти процесса: после перезапуска сервера список
+              пустой. Это осознанная заглушка вместо базы.
+            </Note>
+          </Reveal>
         </div>
-      </div>
-    </div>
+      </Section>
+    </article>
   );
 }

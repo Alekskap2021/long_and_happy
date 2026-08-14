@@ -1,12 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ArrowRight } from "lucide-react";
 
 import { TrackFunnelStep } from "@/components/analytics/track-funnel-step";
 import { ButtonLink } from "@/components/ui/button";
-import { Card, CardLink, Note, Tag } from "@/components/ui/card";
 import { Illustration } from "@/components/ui/illustration";
-import { Eyebrow } from "@/components/ui/section";
+import { ListLink } from "@/components/ui/list-link";
+import { Note } from "@/components/ui/note";
+import { Reveal } from "@/components/ui/reveal";
+import { Eyebrow, Section } from "@/components/ui/section";
+import { Tag } from "@/components/ui/tag";
 import {
   getDiagnostic,
   getMaterialsBySlugs,
@@ -65,38 +69,49 @@ export default async function ThemePage({
         meta={{ theme: theme.slug }}
       />
 
-      {/* 1. Живая сцена */}
-      <header className="border-b border-line bg-paper-deep py-14 sm:py-20">
-        <div className="container-page grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
-          <div>
-            <Eyebrow>{themeLabels[theme.slug]}</Eyebrow>
-            <h1 className="mt-4 text-3xl sm:text-[2.75rem] sm:leading-[1.08]">
-              {theme.title}
-            </h1>
-            <p className="mt-5 max-w-xl text-lg text-ink-soft">
-              Сначала — разбор без оплаты. Дальше — упражнение и подходящий
-              следующий шаг, если он действительно продолжает ваш вопрос.
-            </p>
-          </div>
+      {/* 1. Сцена как эмоциональный якорь: реплики, а не диалог в рамке. */}
+      <header className="wash grain relative overflow-hidden border-b border-line">
+        <div className="container-page relative py-16 sm:py-24">
+          <div className="grid gap-14 lg:grid-cols-[1fr_1fr] lg:gap-20">
+            <Reveal>
+              <Eyebrow>{themeLabels[theme.slug]}</Eyebrow>
+              <h1 className="mt-5 text-display">{theme.title}</h1>
+              <p className="mt-6 max-w-xl text-lead text-ink-soft">
+                Сначала — разбор без оплаты. Дальше — упражнение и подходящий
+                следующий шаг, если он действительно продолжает ваш вопрос.
+              </p>
+            </Reveal>
 
-          <Card>
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-ink-muted">
-              Знакомая сцена
-            </p>
-            <div className="mt-4 space-y-2 font-display text-lg leading-snug">
-              {theme.scene.lines.map((line) => (
-                <p key={line}>{line}</p>
-              ))}
-            </div>
-          </Card>
+            <Reveal delay={90} className="lg:pt-14">
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-ink-muted">
+                Знакомая сцена
+              </p>
+              <div className="mt-6 space-y-5">
+                {theme.scene.lines.map((line, index) => (
+                  <p
+                    key={line}
+                    className={`voice text-[1.4rem] leading-snug sm:text-[1.6rem] ${
+                      index % 2 === 0
+                        ? "text-ink"
+                        : "text-ink-soft sm:translate-x-8"
+                    }`}
+                  >
+                    {line}
+                  </p>
+                ))}
+              </div>
+            </Reveal>
+          </div>
         </div>
       </header>
 
       {/* 2. Бесплатный разбор */}
-      <section className="py-14 sm:py-20">
-        <div className="container-prose">
-          <Eyebrow>Бесплатный разбор</Eyebrow>
-          <div className="prose-editorial mt-6">
+      <section className="py-20 sm:py-28">
+        <div className="container-page max-w-[44rem]">
+          <Reveal>
+            <Eyebrow>Бесплатный разбор</Eyebrow>
+          </Reveal>
+          <div className="prose-editorial mt-8">
             {theme.analysis.slice(0, 2).map((section) => (
               <section key={section.heading}>
                 <h3>{section.heading}</h3>
@@ -108,14 +123,16 @@ export default async function ThemePage({
           </div>
         </div>
 
-        {/* Передышка внутри длинного разбора: иллюстрация во всю ширину текста. */}
+        {/* Передышка внутри длинного разбора. */}
         {theme.illustration && (
-          <div className="container-page my-12 sm:my-16">
-            <Illustration name={theme.illustration} />
+          <div className="container-page my-14 sm:my-20">
+            <Reveal>
+              <Illustration name={theme.illustration} />
+            </Reveal>
           </div>
         )}
 
-        <div className="container-prose">
+        <div className="container-page max-w-[44rem]">
           <div className="prose-editorial">
             {theme.analysis.slice(2).map((section) => (
               <section key={section.heading}>
@@ -128,31 +145,51 @@ export default async function ThemePage({
           </div>
 
           {theme.examples.length > 0 && (
-            <div className="mt-12">
-              <h3 className="font-display text-2xl">Как это звучит вслух</h3>
-              <div className="mt-5 space-y-3">
+            <div className="mt-16">
+              <h3 className="font-display text-title">Как это звучит вслух</h3>
+              <dl className="mt-8 space-y-8">
                 {theme.examples.map((example) => (
-                  <Card key={example.title}>
-                    <p className="font-medium">{example.title}</p>
-                    <p className="mt-2 text-[0.95rem] text-ink-soft">
-                      {example.body}
-                    </p>
-                  </Card>
+                  <div
+                    key={example.title}
+                    className="border-l-2 border-accent-edge pl-5"
+                  >
+                    <dt className="voice text-[1.15rem] leading-snug text-ink">
+                      {example.title}
+                    </dt>
+                    <dd className="mt-2.5 text-ink-soft">{example.body}</dd>
+                  </div>
                 ))}
-              </div>
+              </dl>
             </div>
+          )}
+
+          {/* Границы формата остаются в потоке разбора, а не уходят в подвал. */}
+          {theme.therapyNote && (
+            <Note
+              title="Когда обучение не подходит"
+              icon="konsultaciya"
+              className="mt-16"
+            >
+              <p className="mt-2">{theme.therapyNote}</p>
+              <Link
+                href="/konsultacii"
+                className="mt-3 inline-block text-accent underline underline-offset-4"
+              >
+                Раздел «Консультации»
+              </Link>
+            </Note>
           )}
         </div>
       </section>
 
       {/* 3. Микроопыт */}
       {diagnostic && (
-        <section className="bg-ink py-14 text-paper sm:py-20">
-          <div className="container-page grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
+        <Section tone="band">
+          <div className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-end">
             <div>
-              <Eyebrow tone="ink">Микроопыт</Eyebrow>
-              <h2 className="mt-3 text-2xl sm:text-3xl">{diagnostic.title}</h2>
-              <p className="mt-4 max-w-2xl text-paper-deep/80">
+              <Eyebrow>Микроопыт</Eyebrow>
+              <h2 className="mt-4 text-title">{diagnostic.title}</h2>
+              <p className="mt-5 max-w-2xl text-lead text-ink-soft">
                 {diagnostic.situations.length} ситуации,{" "}
                 {diagnostic.situations.length * 2} вопросов,{" "}
                 {diagnostic.durationMinutes} минуты. Помогает перевести идею
@@ -161,96 +198,76 @@ export default async function ThemePage({
             </div>
             <ButtonLink
               href={`/diagnostika/${diagnostic.slug}`}
-              variant="inverse"
+              variant="on-band"
+              size="lg"
             >
               Пройти диагностику
+              <ArrowRight aria-hidden className="h-4 w-4" strokeWidth={1.75} />
             </ButtonLink>
           </div>
-        </section>
+        </Section>
       )}
 
       {/* Связанные материалы */}
       {materials.length > 0 && (
-        <section className="py-14 sm:py-20">
-          <div className="container-page">
-            <h2 className="font-display text-2xl">Связанные материалы</h2>
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <Section title="Связанные материалы">
+          <Reveal>
+            <ul className="-mx-5 grid sm:-mx-6 sm:grid-cols-2 sm:gap-x-6">
               {materials.map((material) => (
-                <CardLink
-                  key={material.slug}
-                  href={`/besplatno/${material.slug}`}
-                  className="flex h-full flex-col"
-                >
-                  <div>
-                    <Tag icon={material.format}>
-                      {formatLabels[material.format]}
-                    </Tag>
-                  </div>
-                  <p className="mt-3 flex-1 font-display text-lg leading-snug">
-                    {material.title}
-                  </p>
-                  <span className="mt-4 text-sm text-ink-muted">
-                    {material.readingMinutes} мин
-                  </span>
-                </CardLink>
+                <li key={material.slug}>
+                  <ListLink href={`/besplatno/${material.slug}`}>
+                    <span className="flex flex-wrap items-center gap-2.5">
+                      <Tag tone="accent" icon={material.format}>
+                        {formatLabels[material.format]}
+                      </Tag>
+                      <span className="text-xs text-ink-muted">
+                        {material.readingMinutes} мин
+                      </span>
+                    </span>
+                    <p className="mt-4 font-display text-[1.2rem] leading-snug">
+                      {material.title}
+                    </p>
+                  </ListLink>
+                </li>
               ))}
-            </div>
-          </div>
-        </section>
+            </ul>
+          </Reveal>
+        </Section>
       )}
 
       {/* 4. Следующий шаг */}
-      <section className="bg-paper-deep py-14 sm:py-20">
-        <div className="container-page">
-          <Eyebrow>Следующий шаг</Eyebrow>
-          <h2 className="mt-3 font-display text-2xl sm:text-3xl">
-            Если после разбора появился вопрос
-          </h2>
-          <div className="mt-6 grid gap-4 lg:grid-cols-2">
+      <Section
+        eyebrow="Следующий шаг"
+        title="Если после разбора появился вопрос"
+        tone="deep"
+      >
+        <Reveal>
+          <ul className="-mx-5 sm:-mx-6">
             {products.map((product) => (
-              <Card key={product.slug} className="flex h-full flex-col">
-                <div className="flex items-center gap-2">
-                  <Tag tone="accent" icon={product.kind}>
-                    {productKindLabels[product.kind]}
-                  </Tag>
-                  {product.availability !== "available" && (
-                    <Tag>
-                      {product.availability === "waitlist"
-                        ? "Лист ожидания"
-                        : "Готовится"}
+              <li key={product.slug} className="border-t border-line last:border-b">
+                <ListLink href={`/kursy/${product.slug}`}>
+                  <span className="flex flex-wrap items-center gap-2">
+                    <Tag tone="accent" icon={product.kind}>
+                      {productKindLabels[product.kind]}
                     </Tag>
-                  )}
-                </div>
-                <p className="mt-4 font-display text-xl">{product.title}</p>
-                <p className="mt-2.5 flex-1 text-[0.95rem] text-ink-soft">
-                  {product.tagline}
-                </p>
-                <div className="mt-5">
-                  <ButtonLink
-                    href={`/kursy/${product.slug}`}
-                    variant="secondary"
-                    size="sm"
-                  >
-                    Подробнее
-                  </ButtonLink>
-                </div>
-              </Card>
+                    {product.availability !== "available" && (
+                      <Tag tone="outline">
+                        {product.availability === "waitlist"
+                          ? "Лист ожидания"
+                          : "Готовится"}
+                      </Tag>
+                    )}
+                  </span>
+                  <p className="mt-4 font-display text-title">{product.title}</p>
+                  <p className="mt-2.5 max-w-xl text-ink-soft">
+                    {product.tagline}
+                  </p>
+                </ListLink>
+              </li>
             ))}
-          </div>
-
-          {theme.therapyNote && (
-            <div className="mt-8">
-              <Note icon="konsultaciya">
-                <p className="font-medium">Когда обучение не подходит</p>
-                <p className="mt-2">{theme.therapyNote}</p>
-                <Link href="/konsultacii" className="mt-2 inline-block underline">
-                  Раздел «Консультации»
-                </Link>
-              </Note>
-            </div>
-          )}
-        </div>
-      </section>
+          </ul>
+        </Reveal>
+      </Section>
     </article>
   );
 }
