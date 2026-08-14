@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #fbf8f3;
+  --color-paper-deep: #f2ebdf;
+  --color-paper-card: #ffffff;
+  --color-ink: #191512;
+  --color-ink-soft: #564d43;
+  --color-ink-muted: #8a7f72;
+  --color-line: #e2d8c8;
+  --color-line-strong: #cbbda7;
+  --color-accent: #a2452f;
+  --color-accent-hover: #8a3826;
+  --color-accent-soft: #f6e6df;
+  --color-forest: #2f4a3f;
+  --color-forest-soft: #e6ece7;
+
+  --font-display: var(--font-serif-display), Georgia, serif;
+  --font-sans: var(--font-sans-text), system-ui, sans-serif;
+
+  --text-display: 3.25rem;
+  --text-display--line-height: 1.06;
+  --text-display--letter-spacing: -0.02em;
+
+  --radius-card: 0.75rem;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  ::selection {
+    background-color: var(--color-accent-soft);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+}
+
+@utility container-page {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 76rem;
+  padding-inline: 1.25rem;
+}
+
+@utility container-prose {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 44rem;
+  padding-inline: 1.25rem;
+}
+
+/* Длинные авторские тексты: единая типографика для статей и разборов. */
+@utility prose-editorial {
+  & p {
+    margin-block: 1.05em;
+    color: var(--color-ink-soft);
+  }
+
+  & p:first-child {
+    margin-top: 0;
+  }
+
+  /* Первый заголовок не должен отбивать текст от верхнего края блока:
+     гасим отступ и у прямого первого ребёнка, и внутри первой секции. */
+  & > *:first-child,
+  & > *:first-child > *:first-child {
+    margin-top: 0;
+  }
+
+  & > *:last-child {
+    margin-bottom: 0;
+  }
+
+  & h3 {
+    margin-top: 2em;
+    margin-bottom: 0.6em;
+    font-size: 1.35rem;
+    color: var(--color-ink);
+  }
+
+  & ul {
+    margin-block: 1.2em;
+    display: grid;
+    gap: 0.7em;
+  }
+
+  & li {
+    position: relative;
+    padding-left: 1.4em;
+    color: var(--color-ink-soft);
+  }
+
+  & li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.62em;
+    width: 0.55em;
+    height: 1px;
+    background-color: var(--color-accent);
+  }
+
+  & strong {
+    color: var(--color-ink);
+    font-weight: 600;
+  }
+}
