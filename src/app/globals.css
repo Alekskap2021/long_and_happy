@@ -239,6 +239,45 @@
   --ring: oklch(45.5% 0.064 130);
 }
 
+/* Бордо — журнальная палитра: бумага, чернила и вино, старое золото в полосе.
+   С референса: бумага #F3EFE7, чернила #202322, бордо #762D3A,
+   серо-зелёный #667166, сине-серый #7A8790 и старое золото #B39A6A. */
+[data-theme="bordo"] {
+  color-scheme: light;
+
+  --paper: oklch(95.3% 0.011 85);
+  --paper-deep: oklch(93.4% 0.014 85);
+  --paper-card: oklch(97.6% 0.007 85);
+  --elevated: oklch(98.6% 0.005 85);
+
+  --ink: oklch(25.3% 0.005 174);
+  --ink-soft: oklch(44% 0.008 174);
+  --ink-muted: oklch(51% 0.01 174);
+
+  --line: oklch(87.5% 0.011 85);
+  --line-strong: oklch(76.5% 0.014 238);
+
+  --accent: oklch(40.5% 0.103 12);
+  --accent-hover: oklch(34% 0.098 12);
+  --accent-soft: oklch(92.6% 0.026 12);
+  --on-accent: oklch(97.5% 0.008 85);
+
+  --second: oklch(50% 0.026 145);
+  --second-soft: oklch(93.2% 0.016 145);
+
+  --boundary: oklch(49.5% 0.064 83);
+  --boundary-soft: oklch(94.6% 0.026 83);
+
+  --band: oklch(33% 0.085 12);
+  --on-band: oklch(95.3% 0.011 85);
+  --band-line: oklch(44% 0.075 12);
+  --band-accent: oklch(78% 0.075 83);
+  --band-second: oklch(76% 0.03 238);
+  --band-boundary: oklch(82% 0.062 83);
+
+  --ring: oklch(40.5% 0.103 12);
+}
+
 /* Сумерки — тёмная синяя, абрикосовый акцент. */
 [data-theme="dusk"] {
   color-scheme: dark;

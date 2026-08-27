@@ -51,7 +51,7 @@ export function ThemeSwitcher({ className = "" }: { className?: string }) {
           align="end"
           alignItemWithTrigger={false}
         >
-          {/* Палитр восемь: список ограничен свободным местом до края экрана
+          {/* Палитр девять: список ограничен свободным местом до края экрана
               (--available-height от позиционера) и скроллится внутри. */}
           <Select.Popup className="flex max-h-[var(--available-height)] min-w-64 origin-[var(--transform-origin)] flex-col overflow-hidden rounded-card border border-line bg-elevated p-1.5 shadow-[0_18px_50px_-24px_color-mix(in_oklab,var(--ink)_45%,transparent)] transition-[opacity,transform] duration-200 ease-calm data-ending-style:scale-[0.98] data-ending-style:opacity-0 data-starting-style:scale-[0.98] data-starting-style:opacity-0 motion-reduce:transition-none">
             <p className="shrink-0 px-2.5 pb-1.5 pt-1 text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-ink-muted">

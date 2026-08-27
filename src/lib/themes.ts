@@ -42,6 +42,12 @@ export const themes = [
     scheme: "light",
   },
   {
+    id: "bordo",
+    label: "Бордо",
+    mood: "Бумага, чернила, старое золото",
+    scheme: "light",
+  },
+  {
     id: "dusk",
     label: "Сумерки",
     mood: "Тёмная синяя, абрикос",

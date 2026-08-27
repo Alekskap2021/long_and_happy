@@ -21,12 +21,16 @@ const diagnosticHref = "/diagnostika/chto-vy-delaete-slovami";
 
 function BrandMark() {
   return (
-    <Link href="/" className="group flex items-center gap-3">
+    <Link
+      href="/"
+      aria-label="Долго и счастливо — на главную"
+      className="group flex shrink-0 items-center gap-3"
+    >
       <span
         aria-hidden
         className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-line transition-colors duration-200 ease-calm group-hover:border-accent-edge"
       >
-        <span className="flex gap-[3px]">
+        <span className="flex gap-0.75">
           <span className="h-1.5 w-1.5 rounded-full bg-accent" />
           <span className="h-1.5 w-1.5 rounded-full bg-second" />
         </span>
@@ -52,8 +56,8 @@ export function SiteHeader() {
   }
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-paper/80 backdrop-blur-xl">
-      <div className="container-page flex h-[4.5rem] items-center justify-between gap-6">
+    <header className="sticky top-0 z-40 border-b border-line bg-paper/90 backdrop-blur-xl">
+      <div className="container-page flex h-18 items-center justify-between gap-6">
         <BrandMark />
 
         {/* Пять пунктов + бренд + действия помещаются в строку только с 1280px:
